@@ -8,3 +8,6 @@ __pycache__/
 # IDE / AI agent temporary artifacts
 .gemini/
 .agents/
+task.md
+implementation_plan.md
+walkthrough.md
