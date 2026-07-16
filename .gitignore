@@ -1,0 +1,10 @@
+# Python virtual environment
+.venv/
+
+# Python compiled bytecode
+__pycache__/
+*.pyc
+
+# IDE / AI agent temporary artifacts
+.gemini/
+.agents/
