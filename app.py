@@ -7,6 +7,7 @@ import plotly.express as px
 from src.data_loader import load_data
 from src.analysis import moving_averages, metrics_summary
 from src.recommender import recommend
+from src.report import build_report
 
 # Page Setup
 st.set_page_config(page_title="Investment Recommendation System", layout="wide")
@@ -193,6 +194,21 @@ with comp_col2:
         height=400
     )
     st.plotly_chart(fig_sharpe, use_container_width=True)
+
+# -------------------------------------------------------------
+# Section 5 — Download Report
+# -------------------------------------------------------------
+st.header("Section 5 — Download Report")
+report_profile = profile.lower()
+report_text = build_report(prices, report_profile)
+today_str = pd.Timestamp.now().strftime("%Y-%m-%d")
+
+st.download_button(
+    label="Download Plain-Text Report",
+    data=report_text,
+    file_name=f"investment_report_{report_profile}_{today_str}.txt",
+    mime="text/plain"
+)
 
 # Footer disclaimer
 st.markdown("---")
