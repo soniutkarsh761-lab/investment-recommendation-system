@@ -1,13 +1,17 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
 
-# Import data loading, analysis, and recommendation modules
+# Import data loading, analysis, recommendation, and report modules
 from src.data_loader import load_data
 from src.analysis import moving_averages, metrics_summary
 from src.recommender import recommend
 from src.report import build_report
+from src.backtest import run_backtest
+from src.insights import growth_simulation, correlation_matrix
+from src.charts import (
+    nifty_chart, stock_chart, normalized_chart, sharpe_chart,
+    growth_chart, correlation_heatmap
+)
 
 # Page Setup
 st.set_page_config(page_title="Investment Recommendation System", layout="wide")
@@ -18,6 +22,11 @@ st.caption("Built by Utkarsh Soni · BBA (International Business), MIT-WPU")
 @st.cache_data
 def get_cached_data():
     return load_data()
+
+# Cache backtest execution to prevent lookahead validation lag
+@st.cache_data
+def get_backtest_results(_prices):
+    return run_backtest(_prices, "2024-07-15", holding_days=252)
 
 # Load historical stock prices
 prices = get_cached_data()
@@ -31,22 +40,14 @@ all_stocks = sorted([col for col in prices.columns if col != "^NSEI"])
 
 # Sidebar selections
 st.sidebar.header("User Settings")
-profile = st.sidebar.radio(
-    "Select Risk Profile",
-    ["Conservative", "Moderate", "Aggressive"],
-    index=1
-)
-selected_stocks = st.sidebar.multiselect(
-    "Select Tracked Stocks",
-    all_stocks,
-    default=all_stocks
-)
+profile = st.sidebar.radio("Select Risk Profile", ["Conservative", "Moderate", "Aggressive"], index=1)
+selected_stocks = st.sidebar.multiselect("Select Tracked Stocks", all_stocks, default=all_stocks)
 
 if not selected_stocks:
     st.warning("Please select at least one stock to display dashboard metrics.")
     st.stop()
 
-# Pre-calculate common metrics and SMAs to avoid repeating inside display logic
+# Pre-calculate common metrics and SMAs
 sma_50_df, sma_200_df = moving_averages(prices)
 metrics_df = metrics_summary(prices)
 latest_nifty = prices["^NSEI"].iloc[-1]
@@ -79,20 +80,8 @@ col1.metric("NIFTY 50 Latest Close", f"{latest_nifty:,.2f}")
 col2.metric("NIFTY 50 6-Month Return", f"{nifty_return_6m * 100:+.2f}%")
 col3.metric("Tracked Stocks > 200-day MA", f"{pct_above_200:.1f}%")
 
-# NIFTY 50 chart with overlaid MAs
-fig_nifty = go.Figure()
-fig_nifty.add_trace(go.Scatter(x=prices.index, y=prices["^NSEI"], name="NIFTY 50 Close", line=dict(color="#1f77b4", width=2)))
-fig_nifty.add_trace(go.Scatter(x=prices.index, y=sma_50_df["^NSEI"], name="50-day MA", line=dict(color="#ff7f0e", width=1.5, dash="dash")))
-fig_nifty.add_trace(go.Scatter(x=prices.index, y=sma_200_df["^NSEI"], name="200-day MA", line=dict(color="#d62728", width=1.5, dash="dot")))
-fig_nifty.update_layout(
-    title="NIFTY 50 Index (Benchmark) with Moving Averages",
-    xaxis_title="Date",
-    yaxis_title="Index Level",
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    margin=dict(l=20, r=20, t=50, b=20),
-    height=400
-)
-st.plotly_chart(fig_nifty, use_container_width=True)
+# NIFTY 50 Chart
+st.plotly_chart(nifty_chart(prices, sma_50_df["^NSEI"], sma_200_df["^NSEI"]), use_container_width=True)
 
 # -------------------------------------------------------------
 # Section 2 — Recommendations
@@ -100,11 +89,9 @@ st.plotly_chart(fig_nifty, use_container_width=True)
 st.header("Section 2 — Stock Recommendations")
 st.subheader(f"Risk Profile: {profile}")
 
-# Generate recommendation table
 rec_df = recommend(prices, profile=profile.lower())
 rec_df_filtered = rec_df.loc[selected_stocks]
 
-# Formatting function for recommendation cells
 def color_recommendation(val):
     if val == "Buy":
         return "background-color: #d4edda; color: #155724; font-weight: bold;"
@@ -114,7 +101,6 @@ def color_recommendation(val):
         return "background-color: #f8d7da; color: #721c24; font-weight: bold;"
     return ""
 
-# Display styled DataFrame
 if hasattr(rec_df_filtered.style, "map"):
     styled_df = rec_df_filtered.style.map(color_recommendation, subset=["Recommendation"])
 else:
@@ -129,7 +115,6 @@ st.header("Section 3 — Stock Deep-Dive")
 deep_dive_stock = st.selectbox("Select Stock for Deep-Dive Analysis", selected_stocks)
 
 if deep_dive_stock:
-    # Selected stock metric cards
     stock_metrics = metrics_df.loc[deep_dive_stock]
     m_col1, m_col2, m_col3, m_col4, m_col5 = st.columns(5)
     m_col1.metric("Annualized CAGR", f"{stock_metrics['Annualized Return'] * 100:.2f}%")
@@ -138,20 +123,7 @@ if deep_dive_stock:
     m_col4.metric("Max Drawdown", f"{stock_metrics['Max Drawdown'] * 100:.2f}%")
     m_col5.metric("CAPM Beta", f"{stock_metrics['Beta']:.2f}")
     
-    # Selected stock price history chart
-    fig_stock = go.Figure()
-    fig_stock.add_trace(go.Scatter(x=prices.index, y=prices[deep_dive_stock], name="Close Price", line=dict(color="#2ca02c", width=2)))
-    fig_stock.add_trace(go.Scatter(x=prices.index, y=sma_50_df[deep_dive_stock], name="50-day MA", line=dict(color="#ff7f0e", width=1.5, dash="dash")))
-    fig_stock.add_trace(go.Scatter(x=prices.index, y=sma_200_df[deep_dive_stock], name="200-day MA", line=dict(color="#d62728", width=1.5, dash="dot")))
-    fig_stock.update_layout(
-        title=f"{deep_dive_stock} Historical Price & Moving Averages",
-        xaxis_title="Date",
-        yaxis_title="Price (INR)",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=20, r=20, t=50, b=20),
-        height=400
-    )
-    st.plotly_chart(fig_stock, use_container_width=True)
+    st.plotly_chart(stock_chart(prices, deep_dive_stock, sma_50_df[deep_dive_stock], sma_200_df[deep_dive_stock]), use_container_width=True)
 
 # -------------------------------------------------------------
 # Section 4 — Comparison
@@ -160,45 +132,80 @@ st.header("Section 4 — Comparative Analysis")
 comp_col1, comp_col2 = st.columns(2)
 
 with comp_col1:
-    # Normalized performance chart (Rebased to 100)
     normalized_prices = prices[selected_stocks].div(prices[selected_stocks].iloc[0]) * 100.0
-    fig_norm = px.line(
-        normalized_prices,
-        x=normalized_prices.index,
-        y=selected_stocks,
-        title="Normalized Stock Performance (Rebased to 100 at Start Date)"
-    )
-    fig_norm.update_layout(
-        xaxis_title="Date",
-        yaxis_title="Normalized Price Level",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=20, r=20, t=50, b=20),
-        height=400
-    )
-    st.plotly_chart(fig_norm, use_container_width=True)
+    st.plotly_chart(normalized_chart(normalized_prices, selected_stocks), use_container_width=True)
 
 with comp_col2:
-    # Sharpe ratio comparison bar chart
-    fig_sharpe = px.bar(
-        metrics_df.loc[selected_stocks],
-        y="Sharpe Ratio",
-        title="Sharpe Ratio Comparison",
-        color="Sharpe Ratio",
-        color_continuous_scale=px.colors.diverging.RdYlGn,
-        labels={"Stock": "Ticker"}
-    )
-    fig_sharpe.update_layout(
-        xaxis_title="Stock Ticker",
-        yaxis_title="Sharpe Ratio",
-        margin=dict(l=20, r=20, t=50, b=20),
-        height=400
-    )
-    st.plotly_chart(fig_sharpe, use_container_width=True)
+    st.plotly_chart(sharpe_chart(metrics_df, selected_stocks), use_container_width=True)
 
 # -------------------------------------------------------------
-# Section 5 — Download Report
+# Section 5 — Wealth Growth Simulator
 # -------------------------------------------------------------
-st.header("Section 5 — Download Report")
+st.header("Section 5 — Wealth Growth Simulator")
+sim_col1, sim_col2 = st.columns([1, 3])
+
+with sim_col1:
+    sim_stock = st.selectbox("Select Stock to Simulate", selected_stocks)
+    initial_amount = st.number_input("Initial Investment Amount (₹)", min_value=1000.0, value=100000.0, step=5000.0)
+
+if sim_stock:
+    sim_series, final_val, multiple = growth_simulation(prices, sim_stock, initial_amount)
+    with sim_col1:
+        st.metric("Final Portfolio Value", f"₹{final_val:,.2f}")
+        st.metric("Growth Multiple", multiple)
+    with sim_col2:
+        st.plotly_chart(growth_chart(sim_series, sim_stock), use_container_width=True)
+
+# -------------------------------------------------------------
+# Section 6 — Diversification Insights
+# -------------------------------------------------------------
+st.header("Section 6 — Diversification Insights")
+corr_matrix_df, most_corr, least_corr = correlation_matrix(prices)
+corr_matrix_subset = corr_matrix_df.loc[selected_stocks, selected_stocks]
+
+st.plotly_chart(correlation_heatmap(corr_matrix_subset), use_container_width=True)
+st.caption(
+    f"**Correlations**: Most correlated pair is **{most_corr[0]}** and **{most_corr[1]}** ({most_corr[2]:.2f}). "
+    f"Least correlated pair is **{least_corr[0]}** and **{least_corr[1]}** ({least_corr[2]:.2f})."
+)
+
+# -------------------------------------------------------------
+# Section 7 — Validation (Backtest)
+# -------------------------------------------------------------
+st.header("Section 7 — Validation (Backtest)")
+backtest_df = get_backtest_results(prices)
+backtest_filtered = backtest_df.loc[selected_stocks]
+
+# Group performance metrics
+avg_buy_return = backtest_filtered[backtest_filtered["Recommendation"] == "Buy"]["Actual Forward Return"].mean()
+avg_hold_return = backtest_filtered[backtest_filtered["Recommendation"] == "Hold"]["Actual Forward Return"].mean()
+
+idx_bt = prices.index.get_indexer([pd.to_datetime("2024-07-15")], method="nearest")[0]
+nifty_bt_start = prices["^NSEI"].iloc[idx_bt]
+nifty_bt_end = prices["^NSEI"].iloc[idx_bt + 252]
+nifty_bt_return = (nifty_bt_end - nifty_bt_start) / nifty_bt_start
+
+b_col1, b_col2, b_col3 = st.columns(3)
+b_col1.metric("Average Buy Return (Backtest)", f"{avg_buy_return * 100:+.2f}%" if not pd.isna(avg_buy_return) else "N/A")
+b_col2.metric("Average Hold Return (Backtest)", f"{avg_hold_return * 100:+.2f}%" if not pd.isna(avg_hold_return) else "N/A")
+b_col3.metric("NIFTY 50 Benchmark Return", f"{nifty_bt_return * 100:+.2f}%")
+
+# Display backtest table
+display_bt_df = backtest_filtered.copy()
+display_bt_df["Actual Forward Return"] = display_bt_df["Actual Forward Return"].map(lambda x: f"{x * 100:.2f}%")
+
+if hasattr(display_bt_df.style, "map"):
+    styled_bt_df = display_bt_df.style.map(color_recommendation, subset=["Recommendation"])
+else:
+    styled_bt_df = display_bt_df.style.applymap(color_recommendation, subset=["Recommendation"])
+
+st.dataframe(styled_bt_df, use_container_width=True)
+st.caption("*Backtest is indicative — 10 stocks, single as-of date (2024-07-15).*")
+
+# -------------------------------------------------------------
+# Section 8 — Download Report
+# -------------------------------------------------------------
+st.header("Section 8 — Download Report")
 report_profile = profile.lower()
 report_text = build_report(prices, report_profile)
 today_str = pd.Timestamp.now().strftime("%Y-%m-%d")
