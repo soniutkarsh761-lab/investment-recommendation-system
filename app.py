@@ -1,16 +1,15 @@
 import streamlit as st
 import pandas as pd
-
-# Import data loading, analysis, recommendation, and report modules
 from src.data_loader import load_data
 from src.analysis import moving_averages, metrics_summary
 from src.recommender import recommend
 from src.report import build_report
 from src.backtest import run_backtest
 from src.insights import growth_simulation, correlation_matrix
+from src.allocator import allocate, allocation_summary
 from src.charts import (
     nifty_chart, stock_chart, normalized_chart, sharpe_chart,
-    growth_chart, correlation_heatmap
+    growth_chart, correlation_heatmap, allocation_chart
 )
 
 # Page Setup
@@ -22,31 +21,27 @@ def format_inr(val):
     """
     Formats a number to INR currency string with Indian formatting style (e.g., ₹1,00,000.00)
     """
-    is_negative = val < 0
+    is_neg = val < 0
     val = abs(val)
     s = f"{val:.2f}"
     parts = s.split(".")
-    dec = parts[1]
     num = parts[0]
     if len(num) <= 3:
-        formatted = f"{num}.{dec}"
+        f_num = f"{num}.{parts[1]}"
     else:
-        last_three = num[-3:]
-        remaining = num[:-3]
         groups = []
-        while len(remaining) > 0:
-            groups.append(remaining[-2:])
-            remaining = remaining[:-2]
+        rem = num[:-3]
+        while len(rem) > 0:
+            groups.append(rem[-2:])
+            rem = rem[:-2]
         groups.reverse()
-        formatted = ",".join(groups) + "," + last_three + "." + dec
-    return f"-₹{formatted}" if is_negative else f"₹{formatted}"
+        f_num = ",".join(groups) + "," + num[-3:] + "." + parts[1]
+    return f"-₹{f_num}" if is_neg else f"₹{f_num}"
 
-# Cache data loading using Streamlit's cache decorator
 @st.cache_data
 def get_cached_data():
     return load_data()
 
-# Cache backtest execution to prevent lookahead validation lag
 @st.cache_data
 def get_backtest_results(_prices):
     return run_backtest(_prices, "2024-07-15", holding_days=252)
@@ -87,18 +82,14 @@ tabs = st.tabs([
 ])
 
 def color_recommendation(val):
-    if val == "Buy":
-        return "background-color: #d4edda; color: #155724; font-weight: bold;"
-    elif val == "Hold":
-        return "background-color: #fff3cd; color: #856404; font-weight: bold;"
-    elif val == "Sell":
-        return "background-color: #f8d7da; color: #721c24; font-weight: bold;"
-    return ""
+    colors = {"Buy": "background-color: #d4edda; color: #155724; font-weight: bold;",
+              "Hold": "background-color: #fff3cd; color: #856404; font-weight: bold;",
+              "Sell": "background-color: #f8d7da; color: #721c24; font-weight: bold;"}
+    return colors.get(val, "")
 
 def show_styled_df(df):
-    if hasattr(df.style, "map"):
-        return df.style.map(color_recommendation, subset=["Recommendation"])
-    return df.style.applymap(color_recommendation, subset=["Recommendation"])
+    f = df.style.map if hasattr(df.style, "map") else df.style.applymap
+    return f(color_recommendation, subset=["Recommendation"])
 
 # Tab 1 — Market Overview
 with tabs[0]:
@@ -109,14 +100,14 @@ with tabs[0]:
     else:
         st.success("📈 **Market Regime: Uptrend** — NIFTY 50 is trending positive.")
         
-    target_date_6m = prices.index[-1] - pd.DateOffset(months=6)
-    idx_6m = prices.index.get_indexer([target_date_6m], method="nearest")[0]
-    nifty_price_6m = prices["^NSEI"].iloc[idx_6m]
-    nifty_return_6m = (latest_nifty - nifty_price_6m) / nifty_price_6m
+    t_6m = prices.index[-1] - pd.DateOffset(months=6)
+    idx_6m = prices.index.get_indexer([t_6m], method="nearest")[0]
+    nifty_return_6m = (latest_nifty - prices["^NSEI"].iloc[idx_6m]) / prices["^NSEI"].iloc[idx_6m]
     
     above_200 = sum(1 for stock in all_stocks if prices[stock].iloc[-1] > sma_200_df[stock].iloc[-1])
     pct_above_200 = (above_200 / len(all_stocks)) * 100
     
+    # Metric Cards
     col1, col2, col3 = st.columns(3)
     col1.metric("NIFTY 50 Latest Close", f"{latest_nifty:,.2f}")
     col2.metric("NIFTY 50 6-Month Return", f"{nifty_return_6m * 100:+.2f}%")
@@ -206,6 +197,23 @@ with tabs[3]:
             f"**Correlations**: Most correlated pair is **{most_corr[0]}** and **{most_corr[1]}** ({most_corr[2]:.2f}). "
             f"Least correlated pair is **{least_corr[0]}** and **{least_corr[1]}** ({least_corr[2]:.2f})."
         )
+        
+    st.subheader("Suggested Allocation")
+    st.divider()
+    if not selected_stocks:
+        st.info("Select at least one stock from the sidebar to view this analysis.")
+    else:
+        alloc_col1, alloc_col2 = st.columns([3, 2])
+        with alloc_col1:
+            alloc_amount = st.number_input("Portfolio Size to Allocate (₹)", min_value=1000.0, value=100000.0, step=5000.0, key="alloc_amt")
+            alloc_df = allocate(prices, profile, alloc_amount)
+            display_alloc = alloc_df.copy()
+            display_alloc["Weight %"] = display_alloc["Weight %"].map(lambda x: f"{x:.2f}%")
+            display_alloc["Rupee Amount"] = display_alloc["Rupee Amount"].map(format_inr)
+            st.dataframe(display_alloc, use_container_width=True)
+            st.write(f"**Allocation Summary:** {allocation_summary(alloc_df, profile, prices)}")
+        with alloc_col2:
+            st.plotly_chart(allocation_chart(alloc_df), use_container_width=True)
 
 # Tab 5 — Validation
 with tabs[4]:

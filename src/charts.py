@@ -109,3 +109,26 @@ def correlation_heatmap(corr_df):
         height=500
     )
     return fig
+
+def allocation_chart(alloc_df):
+    """
+    Renders a donut chart showing the asset allocation weights.
+    """
+    df_reset = alloc_df.reset_index()
+    df_reset = df_reset[df_reset["Weight %"] > 0]
+    
+    fig = px.pie(
+        df_reset, 
+        values="Weight %", 
+        names="Asset", 
+        title="Asset Allocation Weights",
+        hole=0.4,
+        color_discrete_sequence=px.colors.qualitative.Plotly
+    )
+    fig.update_traces(textinfo="percent+label")
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=50, b=20),
+        height=400,
+        showlegend=False
+    )
+    return fig
