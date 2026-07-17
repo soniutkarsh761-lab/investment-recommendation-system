@@ -4,6 +4,8 @@ The Investment Recommendation System is a modular quantitative investment analys
 
 **Built by Utkarsh Soni · BBA (International Business), MIT-WPU — Investment Banking with Finance Capstone Project**
 
+**🔴 Live Demo: [utkarsh-investment-system.streamlit.app](https://utkarsh-investment-system.streamlit.app/)**
+
 ---
 
 ## Key Features
