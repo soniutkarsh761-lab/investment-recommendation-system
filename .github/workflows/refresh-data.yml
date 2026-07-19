@@ -1,0 +1,48 @@
+name: Nightly Data Refresh
+
+on:
+  schedule:
+    # 18:30 IST is 13:00 UTC. Weekdays only (Monday to Friday).
+    - cron: '0 13 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Data Loader
+      run: python src/data_loader.py
+
+    - name: Run Report Generator
+      run: python src/report.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Check if files have changed
+        git add data/stock_prices.csv data/sample_report.txt
+        if git diff --quiet --cached; then
+          echo "No changes in data or report. Skipping commit."
+        else
+          git commit -m "Data: automated nightly refresh"
+          git push
+        fi
