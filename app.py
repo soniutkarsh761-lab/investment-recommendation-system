@@ -44,7 +44,7 @@ header_html = (
     f'<div style="display:flex;align-items:center;gap:12px;">'
     f'<span style="background-color:#00C2A8;color:#0E1525;padding:3px 8px;border-radius:4px;font-weight:bold;font-family:monospace;font-size:14px;">US·IRS</span>'
     f'<div><div style="font-weight:bold;font-size:22px;color:#FFFFFF;line-height:1.2;">Investment Recommendation System</div>'
-    f'<div style="font-size:12px;color:#8892B0;">by Utkarsh Soni · MIT-WPU</div></div></div>'
+    f'<div style="font-size:12px;color:#8892B0;">by Utkarsh Soni</div></div></div>'
     f'<div style="text-align:right;font-size:12px;color:#8892B0;font-family:monospace;">Data as of:<br>'
     f'<span style="color:#00C2A8;font-weight:bold;">{prices.index[-1].strftime("%Y-%m-%d")}</span></div></div>'
     f'<style>'

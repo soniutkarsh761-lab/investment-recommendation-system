@@ -50,7 +50,7 @@ def build_report(prices, profile):
     lines.append("=" * 80)
     lines.append(f"Generated Date:  {datetime.date.today().strftime('%Y-%m-%d')}")
     lines.append(f"Risk Profile:    {profile.upper()}")
-    lines.append("Prepared by:     Utkarsh Soni · BBA (International Business), MIT-WPU")
+    lines.append("Prepared by:     Utkarsh Soni")
     lines.append("-" * 80)
     
     lines.append("\nMARKET OVERVIEW")
