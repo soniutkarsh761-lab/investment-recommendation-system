@@ -27,7 +27,7 @@ The Investment Recommendation System is a modular quantitative investment analys
 
 ## Validation Results
 
-A historical backtest was executed as of **July 15, 2024**, with a holding period of **252 trading days** (1 year) under the Moderate risk profile:
+A historical backtest was executed as of **July 23, 2024**, with a holding period of **252 trading days** (1 year) under the Moderate risk profile:
 
 - **Buy-rated stocks** achieved an average actual forward return of **+11.22%**.
 - **Hold-rated stocks** achieved an average actual forward return of **-1.58%**.
