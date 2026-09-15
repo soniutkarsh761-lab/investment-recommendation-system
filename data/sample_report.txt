@@ -1,15 +1,15 @@
 ================================================================================
                          INVESTMENT RECOMMENDATION REPORT
 ================================================================================
-Generated Date:  2026-09-14
+Generated Date:  2026-09-15
 Risk Profile:    MODERATE
 Prepared by:     Utkarsh Soni
 --------------------------------------------------------------------------------
 
 MARKET OVERVIEW
 ---------------
-NIFTY 50 Latest Close:    23,398.10
-NIFTY 50 6-Month Return:  -1.96%
+NIFTY 50 Latest Close:    23,118.60
+NIFTY 50 6-Month Return:  -1.24%
 Market Regime:            Correction — NIFTY below its 200-day average. Recommendations reflect defensive conditions.
 Tracked Stocks > 200 MA:  20.00%
 --------------------------------------------------------------------------------
@@ -17,104 +17,104 @@ Tracked Stocks > 200 MA:  20.00%
 PER-STOCK PERFORMANCE & RECOMMENDATIONS
 ----------------------------------------
 Ticker: BHARTIARTL.NS
-  Annualized CAGR:     22.77%
-  Volatility:          21.49%
-  Sharpe Ratio:        0.76
+  Annualized CAGR:     21.64%
+  Volatility:          21.40%
+  Sharpe Ratio:        0.71
   Max Drawdown:        -18.77%
   Beta:                0.79
   Composite Score:     54
   Recommendation:      Hold
-  Reasoning:           Hold: moderate uptrend (price above 200-day MA), moderate risk-adjusted returns (Sharpe 0.76), low drawdown history (-18.8%).
+  Reasoning:           Hold: moderate uptrend (price above 200-day MA), moderate risk-adjusted returns (Sharpe 0.71), low drawdown history (-18.8%).
 ------------------------------------------------------------
 Ticker: HDFCBANK.NS
-  Annualized CAGR:     -0.46%
-  Volatility:          20.97%
-  Sharpe Ratio:        -0.33
+  Annualized CAGR:     -0.20%
+  Volatility:          20.98%
+  Sharpe Ratio:        -0.32
   Max Drawdown:        -31.04%
   Beta:                1.06
-  Composite Score:     17
+  Composite Score:     16
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.33), weak 6-month momentum (-13.7%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.32), weak 6-month momentum (-13.3%).
 ------------------------------------------------------------
 Ticker: HINDUNILVR.NS
-  Annualized CAGR:     -5.33%
+  Annualized CAGR:     -5.30%
   Volatility:          20.51%
   Sharpe Ratio:        -0.58
   Max Drawdown:        -33.78%
   Beta:                0.56
   Composite Score:     17
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.58), weak 6-month momentum (-9.9%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.58), weak 6-month momentum (-10.0%).
 ------------------------------------------------------------
 Ticker: ICICIBANK.NS
-  Annualized CAGR:     15.21%
-  Volatility:          20.20%
-  Sharpe Ratio:        0.43
+  Annualized CAGR:     14.47%
+  Volatility:          20.21%
+  Sharpe Ratio:        0.39
   Max Drawdown:        -22.33%
   Beta:                0.97
-  Composite Score:     68
+  Composite Score:     67
   Recommendation:      Buy
-  Reasoning:           Buy: strong uptrend (price and 50-day MA above 200-day MA), weak risk-adjusted returns (Sharpe 0.43).
+  Reasoning:           Buy: strong uptrend (price and 50-day MA above 200-day MA), weak risk-adjusted returns (Sharpe 0.39).
 ------------------------------------------------------------
 Ticker: INFY.NS
-  Annualized CAGR:     -6.72%
-  Volatility:          25.95%
-  Sharpe Ratio:        -0.51
+  Annualized CAGR:     -6.29%
+  Volatility:          26.00%
+  Sharpe Ratio:        -0.49
   Max Drawdown:        -48.17%
   Beta:                0.98
   Composite Score:     11
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.51), high drawdown history (-48.2%), weak 6-month momentum (-16.9%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.49), high drawdown history (-48.2%), weak 6-month momentum (-12.0%).
 ------------------------------------------------------------
 Ticker: ITC.NS
-  Annualized CAGR:     8.85%
-  Volatility:          20.13%
-  Sharpe Ratio:        0.12
+  Annualized CAGR:     8.69%
+  Volatility:          20.14%
+  Sharpe Ratio:        0.11
   Max Drawdown:        -44.93%
   Beta:                0.66
   Composite Score:     20
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), weak risk-adjusted returns (Sharpe 0.12), high drawdown history (-44.9%), weak 6-month momentum (-13.6%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), weak risk-adjusted returns (Sharpe 0.11), high drawdown history (-44.9%), weak 6-month momentum (-14.0%).
 ------------------------------------------------------------
 Ticker: M&M.NS
-  Annualized CAGR:     34.18%
-  Volatility:          28.04%
-  Sharpe Ratio:        0.99
+  Annualized CAGR:     33.27%
+  Volatility:          28.07%
+  Sharpe Ratio:        0.95
   Max Drawdown:        -28.09%
   Beta:                1.19
   Composite Score:     34
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), moderate risk-adjusted returns (Sharpe 0.99).
+  Reasoning:           Sell: downtrend (price below 200-day MA), moderate risk-adjusted returns (Sharpe 0.95).
 ------------------------------------------------------------
 Ticker: RELIANCE.NS
-  Annualized CAGR:     3.24%
-  Volatility:          22.29%
-  Sharpe Ratio:        -0.15
+  Annualized CAGR:     2.78%
+  Volatility:          22.30%
+  Sharpe Ratio:        -0.17
   Max Drawdown:        -27.18%
   Beta:                1.11
-  Composite Score:     16
+  Composite Score:     15
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.15), weak 6-month momentum (-9.1%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.17), weak 6-month momentum (-11.0%).
 ------------------------------------------------------------
 Ticker: SUNPHARMA.NS
-  Annualized CAGR:     19.90%
-  Volatility:          20.03%
-  Sharpe Ratio:        0.67
+  Annualized CAGR:     19.82%
+  Volatility:          20.04%
+  Sharpe Ratio:        0.66
   Max Drawdown:        -19.13%
   Beta:                0.56
-  Composite Score:     68
+  Composite Score:     70
   Recommendation:      Buy
-  Reasoning:           Buy: strong uptrend (price and 50-day MA above 200-day MA), moderate risk-adjusted returns (Sharpe 0.67), low drawdown history (-19.1%).
+  Reasoning:           Buy: strong uptrend (price and 50-day MA above 200-day MA), moderate risk-adjusted returns (Sharpe 0.66), low drawdown history (-19.1%).
 ------------------------------------------------------------
 Ticker: TCS.NS
-  Annualized CAGR:     -8.21%
-  Volatility:          22.50%
+  Annualized CAGR:     -8.11%
+  Volatility:          22.51%
   Sharpe Ratio:        -0.65
   Max Drawdown:        -53.39%
   Beta:                0.82
-  Composite Score:     15
+  Composite Score:     18
   Recommendation:      Sell
-  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.65), high drawdown history (-53.4%), weak 6-month momentum (-9.0%).
+  Reasoning:           Sell: downtrend (price below 200-day MA), negative risk-adjusted returns (Sharpe -0.65), high drawdown history (-53.4%).
 ------------------------------------------------------------
 
 RECOMMENDATION SUMMARY
