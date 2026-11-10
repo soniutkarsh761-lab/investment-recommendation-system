@@ -1,15 +1,15 @@
 ================================================================================
                          INVESTMENT RECOMMENDATION REPORT
 ================================================================================
-Generated Date:  2026-11-09
+Generated Date:  2026-11-10
 Risk Profile:    MODERATE
 Prepared by:     Utkarsh Soni
 --------------------------------------------------------------------------------
 
 MARKET OVERVIEW
 ---------------
-NIFTY 50 Latest Close:    25,030.35
-NIFTY 50 6-Month Return:  +3.53%
+NIFTY 50 Latest Close:    25,044.65
+NIFTY 50 6-Month Return:  +3.59%
 Market Regime:            Uptrend — NIFTY above its 200-day average.
 Tracked Stocks > 200 MA:  70.00%
 --------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ Ticker: BHARTIARTL.NS
   Volatility:          21.54%
   Sharpe Ratio:        0.84
   Max Drawdown:        -18.77%
-  Beta:                0.80
+  Beta:                0.79
   Composite Score:     64
   Recommendation:      Hold
   Reasoning:           Hold: moderate uptrend (price above 200-day MA), moderate risk-adjusted returns (Sharpe 0.84), low drawdown history (-18.8%).
